@@ -1,3 +1,4 @@
 .env
 app/__pycache__/
 tests/__pycache__/
+botnet.ipynb

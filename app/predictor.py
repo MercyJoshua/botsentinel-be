@@ -3,6 +3,8 @@ from pathlib import Path
 import pandas as pd
 import joblib
 
+from .preprocessing import normalize_features_dataframe
+
 
 MODEL_PATH = (
     Path(__file__).resolve().parent.parent
@@ -22,6 +24,7 @@ class BotSentinelPredictor:
 
     def predict(self, flow: dict) -> dict:
         data = pd.DataFrame([flow])
+        data = normalize_features_dataframe(data)
 
         prediction = int(self.model.predict(data)[0])
 

@@ -93,3 +93,20 @@ def test_predict_handles_hexadecimal_source_port():
     response = client.post("/predict", json=VALID_FLOW)
 
     assert response.status_code == 200
+
+
+def test_cors_headers():
+    response = client.get("/health", headers={"Origin": "http://localhost:3000"})
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == "http://localhost:3000"
+
+    response = client.options(
+        "/predict",
+        headers={
+            "Origin": "http://localhost:3000",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == "http://localhost:3000"
