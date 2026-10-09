@@ -32,14 +32,28 @@ frontend_url = os.getenv("FRONTEND_URL")
 if not frontend_url:
     raise RuntimeError("FRONTEND_URL environment variable is not configured.")
 
+# Support comma-separated origins, trimming whitespace and trailing slashes
+allowed_origins = [
+    origin.strip().rstrip("/")
+    for origin in frontend_url.split(",")
+    if origin.strip()
+]
+
+# Ensure local development origins are permitted
+dev_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+for dev_origin in dev_origins:
+    if dev_origin not in allowed_origins:
+        allowed_origins.append(dev_origin)
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[frontend_url],
+    allow_origins=allowed_origins,
     allow_credentials=False,
-    allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type", "Accept"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
 
 
 @app.get("/")
